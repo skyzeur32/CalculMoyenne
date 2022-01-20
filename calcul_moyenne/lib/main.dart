@@ -1,11 +1,16 @@
+import 'package:calcul_moyenne/NoteDataBase.dart';
 import 'package:calcul_moyenne/noteListScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:calcul_moyenne/noteListScreen.dart';
 import 'package:calcul_moyenne/noteScreen.dart';
+import 'accueil.dart';
 import 'noteListScreen.dart';
 
 void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  print("DEMARAGE");
   runApp(const MyApp());
 }
 
@@ -47,7 +52,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: NoteListScreen()
+        home: Accueil()
     );
   }
 }
