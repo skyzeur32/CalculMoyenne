@@ -20,9 +20,10 @@ class Accueil extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<List<Matiere>> snapshot) {
           double somme = 0;
           double sum_coef = 0;
-          MatiereBDD.instance.insertMatiere(new Matiere("MATH",20,1));
+
+          var taille = 0;
           if(snapshot.hasData) {
-            var taille = snapshot.data!.length;
+            taille = snapshot.data!.length;
             for (int i = 0; i < taille; i++) {
                somme+=(snapshot.data![i].moyenne/20)*snapshot.data![i].coef;
               sum_coef += snapshot.data![i].coef;
@@ -32,13 +33,14 @@ class Accueil extends StatelessWidget {
           print("ICI");
           print(somme);
           double moyenne = (somme/sum_coef)*20;
-          moyenne = 7;
+          //moyenne = 7;
           var moy = "?/20";
-          moy = moyenne.toString() + "/20";
+          if(taille>0)
+            moy = moyenne.toStringAsPrecision(4) + "/20";
           return Column(
           children :
           [Text("Ta Moyenne", style: TextStyle(height: 2, fontSize: 55)),
-          Text(moy.toString(), style: TextStyle(height: 2, fontSize: 100)),
+          Text(moy.toString(), style: TextStyle(height: 2, fontSize: 75)),
           SizedBox(height: 70,),
           Column(
           children: [

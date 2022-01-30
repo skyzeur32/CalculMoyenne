@@ -18,8 +18,12 @@ class Tutoriel extends StatelessWidget {
                                   SizedBox(height: 30,),
                                   Text("2- Cliquez sur les matières de votre choix et ajoutez y vos notes",style: TextStyle(fontSize: 22)),
                                   SizedBox(height: 30,),
-                                  Text("3- Vos moyennes sont calculé automatiquement par matière,"
-                                      " votre moyenne général s'affiche dans la page d'accueil de l'application",style: TextStyle(fontSize: 22))])
+                                  Text("3- Vos moyennes sont calculés automatiquement par matière,"
+                                      " votre moyenne général s'affiche dans la page d'accueil de l'application",style: TextStyle(fontSize: 22)),
+                                  SizedBox(height: 30,),
+                                  Text("4- Pour supprimer une matière ou une note faites flisser à droite ou à gauche l'element",style: TextStyle(fontSize: 22))
+          ])
+
         )
     );
   }

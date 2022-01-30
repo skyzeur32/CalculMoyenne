@@ -1,5 +1,6 @@
 import 'package:calcul_moyenne/MatiereBDD.dart';
 import 'package:calcul_moyenne/NoteDataBase.dart';
+import 'package:calcul_moyenne/accueil.dart';
 import 'package:calcul_moyenne/noteMatiere.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
           });},)],);
     });
   }
+
+  otherFunction(String oh) async {
+    final String test = await MatiereBDD.instance.MatiereExist(oh);
+    return test;
+  }
+
+
   FormAddMatiere(BuildContext context){
     TextEditingController customController = TextEditingController();
 
@@ -69,7 +77,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
           elevation:5.0,child:Text("Valider"),onPressed: (){Navigator.of(context).pop(customController.text.toString());
           setState(() {
           //recipes.add(new Note(customController.text.toString(),int.parse(noteController.text.toString()),int.parse(coeffController.text.toString()),int.parse(maxnoteController.text.toString())));
-          MatiereBDD.instance.insertMatiere(new Matiere(customController.text, 0, 1));
+
+              MatiereBDD.instance.insertMatiere(new Matiere(customController.text, 0, 1));
 
         });},)],);
     });
@@ -112,56 +121,66 @@ class _NoteListScreenState extends State<NoteListScreen> {
   Widget build(BuildContext context) {
 
 
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Mes matières") ,
-      ),
-      body: Padding(child : FutureBuilder<List<Matiere>>(
-          future : MatiereBDD.instance.matieres(),
-          builder: (BuildContext context, AsyncSnapshot<List<Matiere>> snapshot) {
-            print("OUI!!");
-            if (snapshot.hasData) {
-              print("OUI!!");
-              List<Matiere>? recipes = snapshot.data;
-
-              return ListView.builder(
-                itemCount: recipes!.length,
-                itemBuilder: (context, index){
-                  final recipe = recipes[index];
-                  return Dismissible(key: UniqueKey(),
-                      onDismissed: (direction){
-                        setState(() {
-                          MatiereBDD.instance.deleteMatiere(recipe.id);
-
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("${recipe.id} supprimé")));
-                      },
-                      background: Container(color: Colors.red,child: Row(children: [Text("Supprimer matière -->"),Spacer(),Text("<--Supprimer matière")]),),
-                      child: RecipeItemWidget(recipe: recipe));
-                },
-              );
-            } else {
-              //return Center(child: CircularProgressIndicator());
-              return Center(child: Text("Chargement"),);
-            }
-          }
-      ), padding: const EdgeInsets.all(10),
-      ),
-
-      floatingActionButton: FloatingActionButton(
-      onPressed: () async {
-
-        setState(() {
-        FormAddMatiere(context);
-        });
-
-
-
+    return WillPopScope(
+      onWillPop: () async {
+        // Do something here
+        Navigator.push( context, MaterialPageRoute( builder: (context) => Accueil()), ).then((value) => setState(() {}));
+        return false;
       },
-      child: Icon(Icons.add)
-    ),
+      child:  Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.push( context, MaterialPageRoute( builder: (context) => Accueil()), ).then((value) => setState(() {}))
+          ),
+          title: Text("Mes matières") ,
+        ),
+        body: Padding(child : FutureBuilder<List<Matiere>>(
+            future : MatiereBDD.instance.matieres(),
+            builder: (BuildContext context, AsyncSnapshot<List<Matiere>> snapshot) {
+
+              if (snapshot.hasData) {
+
+                List<Matiere>? recipes = snapshot.data;
+
+                return ListView.builder(
+                  itemCount: recipes!.length,
+                  itemBuilder: (context, index){
+                    final recipe = recipes[index];
+                    return Dismissible(key: UniqueKey(),
+                        onDismissed: (direction){
+                          setState(() {
+                            MatiereBDD.instance.deleteMatiere(recipe.id);
+
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("${recipe.id} supprimé")));
+                        },
+                        background: Container(color: Colors.red,child: Row(children: [Text("Supprimer matière -->"),Spacer(),Text("<--Supprimer matière")]),),
+                        child: RecipeItemWidget(recipe: recipe));
+                  },
+                );
+              } else {
+                //return Center(child: CircularProgressIndicator());
+                return Center(child: Text("Chargement"),);
+              }
+            }
+        ), padding: const EdgeInsets.all(10),
+        ),
+
+        floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+
+              setState(() {
+                FormAddMatiere(context);
+              });
+
+
+
+            },
+            child: Icon(Icons.add)
+        ),
+      ),
     );
   }
 }
@@ -180,7 +199,7 @@ class RecipeItemWidget extends StatelessWidget {
     bool existe = true;
     String moyenne;
     if(existe)
-       moyenne = recipe.moyenne.toString() + "/20";
+       moyenne = recipe.moyenne.toStringAsPrecision(4) + "/20";
     else
       moyenne = "Aucune";
     return GestureDetector(onTap : () {Navigator.push(context, MaterialPageRoute(builder: (context) =>  NoteMatiere(matiere: recipe)));},child: Card(

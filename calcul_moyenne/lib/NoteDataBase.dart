@@ -26,7 +26,7 @@ class NoteDataBase {
   initDB() async {
     WidgetsFlutterBinding.ensureInitialized();
     return await openDatabase(
-      join(await getDatabasesPath(), 'recipe_database3.db'),
+      join(await getDatabasesPath(), 'recipe_database4.db'),
       onCreate: (db, version) {
         print("CREATION");
         return db.execute(
